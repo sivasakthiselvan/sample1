@@ -4,39 +4,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "Checking out source code..."
                 checkout scm
             }
         }
 
-        stage('Show HTML') {
+        stage('Serve HTML') {
             steps {
-                echo "Displaying contents of sample.html"
-                bat 'type sample.html'
-            }
-        }
-
-        stage('Open HTML') {
-            steps {
-                echo "Opening HTML file in default browser..."
-                bat 'start sample.html'
-            }
-        }
-
-        stage('Archive') {
-            steps {
-                echo "Archiving HTML file..."
-                archiveArtifacts artifacts: '**/*.html', fingerprint: true
+                echo "Starting local web server on http://localhost:8000"
+                // Kill any existing python server first
+                bat 'taskkill /F /IM python.exe /T || exit 0'
+                
+                // Start Python HTTP server in background
+                bat 'start /B python -m http.server 8000'
             }
         }
     }
 
     post {
         success {
-            echo "✅ HTML build completed successfully!"
+            echo "✅ HTML is now being served at: http://localhost:8000/sample.html"
         }
         failure {
-            echo "❌ Build failed!"
+            echo "❌ Failed to serve HTML file"
         }
     }
 }
