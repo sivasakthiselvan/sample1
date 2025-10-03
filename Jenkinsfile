@@ -9,15 +9,17 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Show HTML') {
             steps {
-                echo "No build needed (static HTML project)."
+                echo "Displaying contents of sample.html"
+                bat 'type sample.html'
             }
         }
 
-        stage('Test') {
+        stage('Open HTML') {
             steps {
-                echo "No tests defined."
+                echo "Opening HTML file in default browser..."
+                bat 'start sample.html'
             }
         }
 
@@ -31,7 +33,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build finished successfully!"
+            echo "✅ HTML build completed successfully!"
         }
         failure {
             echo "❌ Build failed!"
