@@ -1,27 +1,40 @@
 pipeline {
     agent any
-    tools {
-        jdk "jdk17"
-        maven "Maven3"
-    }
+
     stages {
         stage('Checkout') {
-            steps { checkout scm }
+            steps {
+                echo "Checking out source code..."
+                checkout scm
+            }
         }
+
         stage('Build') {
-            steps { bat 'mvn clean compile' }
+            steps {
+                echo "No build needed (static HTML project)."
+            }
         }
+
         stage('Test') {
             steps {
-                bat 'mvn test'
-                junit '**/target/surefire-reports/*.xml'
+                echo "No tests defined."
             }
         }
-        stage('Package') {
+
+        stage('Archive') {
             steps {
-                bat 'mvn package -DskipTests'
-                archiveArtifacts '**/target/*.jar'
+                echo "Archiving HTML file..."
+                archiveArtifacts artifacts: '**/*.html', fingerprint: true
             }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Build finished successfully!"
+        }
+        failure {
+            echo "❌ Build failed!"
         }
     }
 }
